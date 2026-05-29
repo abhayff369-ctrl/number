@@ -21,7 +21,7 @@ def search_number(number):
 def home():
     return jsonify({
         "success": True,
-        "message": "Mobile Search API Running"
+        "message": "API Running"
     })
 
 @app.route("/search")
@@ -31,7 +31,7 @@ def search():
     if not number:
         return jsonify({
             "success": False,
-            "message": "Number parameter required"
+            "message": "Number required"
         })
 
     results = search_number(number)
@@ -48,5 +48,4 @@ def search():
         "message": "No data found"
     })
 
-if __name__ == "__main__":
-    app.run()
+app = app
