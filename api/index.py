@@ -1,9 +1,11 @@
 from flask import Flask, jsonify, request
 import csv
+import os
 
 app = Flask(__name__)
 
-CSV_FILE = "data.csv"
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+CSV_FILE = os.path.join(BASE_DIR, "data.csv")
 
 def search_number(number):
     results = []
@@ -26,26 +28,33 @@ def home():
 
 @app.route("/search")
 def search():
-    number = request.args.get("number")
+    try:
+        number = request.args.get("number")
 
-    if not number:
+        if not number:
+            return jsonify({
+                "success": False,
+                "message": "Number parameter required"
+            })
+
+        results = search_number(number)
+
+        if results:
+            return jsonify({
+                "success": True,
+                "total": len(results),
+                "results": results
+            })
+
         return jsonify({
             "success": False,
-            "message": "Number required"
+            "message": "No data found"
         })
 
-    results = search_number(number)
-
-    if results:
+    except Exception as e:
         return jsonify({
-            "success": True,
-            "total": len(results),
-            "results": results
+            "success": False,
+            "error": str(e)
         })
-
-    return jsonify({
-        "success": False,
-        "message": "No data found"
-    })
 
 app = app
